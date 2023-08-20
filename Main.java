@@ -57,7 +57,7 @@ class DFAValidateString {
         for (String state : states) {
             Map<String, String> transition = new HashMap<>();
             for (String validInput : validInputs) {
-                message = String.format("Enter transition () for state '%s' having input '%s': ", state, validInput);
+                message = String.format("Enter transition (δ) for state '%s' having input '%s': ", state, validInput);
                 String nextState = Utility.get_input(message);
                 transition.put(validInput, nextState);
             }
@@ -106,7 +106,7 @@ class DFA {
                 return;
             }
 
-            traversal_path.add(c + "->" + next_state);
+            traversal_path.add(c + " -> " + next_state);
             current_state = next_state;
         }
 
