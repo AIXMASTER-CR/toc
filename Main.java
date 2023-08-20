@@ -34,20 +34,20 @@ class DFAValidateString {
     public static void main() {
         String inputString, message;
 
-        message = "Enter valid inputs (comma-separated): ";
+        message = "Enter valid input states (∑) (comma-separated): ";
         inputString = Utility.get_input(message);
 
         Set<String> validInputs = new HashSet<>(Arrays.asList(inputString.split(",")));
 
-        message = "Enter states (comma-separated): ";
+        message = "Enter states (Q) (comma-separated): ";
         inputString = Utility.get_input(message);
 
         Set<String> states = new HashSet<>(Arrays.asList(inputString.split(",")));
 
-        message = "Enter starting state: ";
+        message = "Enter starting state (q0): ";
         String startingState = Utility.get_input(message);
 
-        message = "Enter all final states (comma-separated): ";
+        message = "Enter all final states (F) (comma-separated): ";
         inputString = Utility.get_input(message);
 
         Set<String> finalStates = new HashSet<>(Arrays.asList(inputString.split(",")));
@@ -57,7 +57,7 @@ class DFAValidateString {
         for (String state : states) {
             Map<String, String> transition = new HashMap<>();
             for (String validInput : validInputs) {
-                message = String.format("Enter transition state for state '%s' having input '%s': ", state, validInput);
+                message = String.format("Enter transition () for state '%s' having input '%s': ", state, validInput);
                 String nextState = Utility.get_input(message);
                 transition.put(validInput, nextState);
             }
@@ -116,7 +116,7 @@ class DFA {
             Utility.show_error("Your string ends at state '" + current_state + "' which is not a final state");
         }
 
-        System.out.println("Traversal Path: " + String.join(" -> ", traversal_path));
+        System.out.println("Traversal Path: " + String.join(" - ", traversal_path));
     }
 }
 
