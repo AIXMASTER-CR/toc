@@ -1,3 +1,8 @@
+
+ use java ENFAConverter " your string ( note: here  + means | ) " to run 
+
+
+
 import java.util.*;
 
 public class ENFAConverter {
