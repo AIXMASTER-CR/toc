@@ -105,8 +105,5 @@ class MealyMachine {
         System.out.println("Traversal Path: " + String.join(" -> ", traversal_path));
     }
 
-    public static void showError(String message) {
-        System.out.println("Output: Your string is not valid");
-        System.out.println("Reason: " + message);
-    }
+ 
 }
