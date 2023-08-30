@@ -1,112 +1,117 @@
 import java.util.*;
 
- class Main {
-     public static void main(String[] args) {
-         MealyMachineValidateString.main();
-     }
- }
+class Main {
+    public static void main(String[] args) {
+        MealyMachineValidateString.main();
+    }
+}
 
- class MealyMachineValidateString {
-     public static void main() {
-         String inputString, message;
+class Utility {
+    public static void show_error(String message) {
+        System.out.println("Output: Your input sequence is not valid");
+        System.out.println("Reason: " + message);
+    }
 
-         message = "Enter valid input symbols (comma-separated): ";
-         inputString = getInput(message);
-         Set<String> validInputs = new HashSet<>(Arrays.asList(inputString.split(",")));
+    public static String get_input(String message) {
+        Scanner scanner = new Scanner(System.in);
+        String inputString;
 
-         message = "Enter states (Q) (comma-separated): ";
-         inputString = getInput(message);
-         Set<String> states = new HashSet<>(Arrays.asList(inputString.split(",")));
+        do {
+            System.out.print(message);
+            inputString = scanner.nextLine();
+            if (inputString.length() == 0) {
+                System.out.println("Input can not be empty");
+            }
+        } while (inputString.length() == 0);
 
-         message = "Enter starting state : ";
-         String startingState = getInput(message);
+        return inputString;
+    }
+}
 
-         Map<String, Map<String, String>> transitions = new HashMap<>();
+class MealyMachineValidateString {
+    public static void main() {
+        String inputString, message;
 
-         for (String state : states) {
-             Map<String, String> transition = new HashMap<>();
-             for (String validInput : validInputs) {
-                 message = String.format("Enter next state for transition '%s' with input '%s': ", state, validInput);
-                 String next_state = getInput(message);
-                 message = String.format("Enter output for transition '%s' with input '%s': ", state, validInput);
-                 String output = getInput(message);
-                 transition.put(validInput, next_state + "," + output);
-             }
-             transitions.put(state, transition);
-         }
+        message = "Enter valid input symbols (comma-separated): ";
+        inputString = Utility.get_input(message);
+        Set<String> validInputs = new HashSet<>(Arrays.asList(inputString.split(",")));
 
-         MealyMachine mealyMachine = new MealyMachine(startingState, transitions);
+        message = "Enter states (Q) (comma-separated): ";
+        inputString = Utility.get_input(message);
+        Set<String> states = new HashSet<>(Arrays.asList(inputString.split(",")));
 
-         while (true) {
-             message = "Enter input sequence to be processed: ";
-             String input_sequence = getInput(message);
-             mealyMachine.process_input_sequence(input_sequence);
+        message = "Enter starting state: ";
+        String startingState = Utility.get_input(message);
 
-             System.out.print("Do you want to process another input sequence? (y/n): ");
-             String choice = new Scanner(System.in).nextLine();
-             if (choice.equalsIgnoreCase("n")) {
-                 break;
-             }
-         }
-     }
+        Map<String, Map<String, String>> transitions = new HashMap<>();
 
-     public static String getInput(String message) {
-         Scanner scanner = new Scanner(System.in);
-         String inputString;
+        for (String state : states) {
+            Map<String, String> transition = new HashMap<>();
+            for (String validInput : validInputs) {
+                message = String.format("Enter next state and output for transition '%s' with input '%s': ", state, validInput);
+                String next_state_and_output = Utility.get_input(message);
+                transition.put(validInput, next_state_and_output);
+            }
+            transitions.put(state, transition);
+        }
 
-         do {
-             System.out.print(message);
-             inputString = scanner.nextLine();
-             if (inputString.length() == 0) {
-                 System.out.println("Input can not be empty");
-             }
-         } while (inputString.length() == 0);
+        MealyMachine mealyMachine = new MealyMachine(startingState, transitions);
 
-         return inputString;
-     }
- }
+        while (true) {
+            message = "Enter input sequence to be processed: ";
+            String input_sequence = Utility.get_input(message);
+            mealyMachine.process_input_sequence(input_sequence);
 
- class MealyMachine {
-     private String startingState;
-     private Map<String, Map<String, String>> transitions;
+            System.out.print("Do you want to process another input sequence? (y/n): ");
+            String choice = new Scanner(System.in).nextLine();
+            if (choice.equalsIgnoreCase("n")) {
+                break;
+            }
+        }
+    }
+}
 
-     public MealyMachine(String startingState, Map<String, Map<String, String>> transitions) {
-         this.startingState = startingState;
-         this.transitions = transitions;
-     }
+class MealyMachine {
+    private String startingState;
+    private Map<String, Map<String, String>> transitions;
 
-     public void process_input_sequence(String input_sequence) {
-         String current_state = startingState;
-         String output_sequence = "";
-         List<String> traversal_path = new ArrayList<>();
-         traversal_path.add(current_state);
+    public MealyMachine(String startingState, Map<String, Map<String, String>> transitions) {
+        this.startingState = startingState;
+        this.transitions = transitions;
+    }
 
-         for (int i = 0; i < input_sequence.length(); i++) {
-             String input_symbol = String.valueOf(input_sequence.charAt(i));
-             Map<String, String> current_transitions = transitions.get(current_state);
+    public void process_input_sequence(String input_sequence) {
+        String current_state = startingState;
+        String output_sequence = "";
+        List<String> traversal_path = new ArrayList<>();
+        traversal_path.add(current_state);
 
-             if (current_transitions.containsKey(input_symbol)) {
-                 String next_state_and_output = current_transitions.get(input_symbol);
-                 String[] next_state_and_output_arr = next_state_and_output.split(",");
-                 String next_state = next_state_and_output_arr[0];
-                 String output = next_state_and_output_arr[1];
+        for (int i = 0; i < input_sequence.length(); i++) {
+            String input_symbol = String.valueOf(input_sequence.charAt(i));
+            Map<String, String> current_transitions = transitions.get(current_state);
 
-                 output_sequence += output;
-                 traversal_path.add(current_state + "(" + input_symbol + "," + output + ")->" + next_state);
-                 current_state = next_state;
-             } else {
-                 showError("Invalid transition: State '" + current_state + "' with input '" + input_symbol + "'");
-                 return;
-             }
-         }
+            if (current_transitions.containsKey(input_symbol)) {
+                String next_state_and_output = current_transitions.get(input_symbol);
+                String[] next_state_and_output_arr = next_state_and_output.split(",");
+                String next_state = next_state_and_output_arr[0];
+                String output = next_state_and_output_arr[1];
 
-         System.out.println("Output Sequence: " + output_sequence);
-         System.out.println();
-         System.out.println("Traversal Path: " + String.join(" -> ", traversal_path));
-     }
+                output_sequence += output;
+                traversal_path.add(current_state + "(" + input_symbol + "," + output + ")->" + next_state);
+                current_state = next_state;
+            } else {
+                Utility.show_error("Invalid transition: " + current_state + " with input " + input_symbol);
+                return;
+            }
+        }
 
-     public static void showError(String message) {
-         System.out.println("Output: Your string is not valid");
-         System.out.println("Reason: " + message);
-     }
- }
+        System.out.println("Output Sequence: " + output_sequence);
+        System.out.println();
+        System.out.println("Traversal Path: " + String.join(" -> ", traversal_path));
+    }
+
+    public static void showError(String message) {
+        System.out.println("Output: Your input sequence is not valid");
+        System.out.println("Reason: " + message);
+    }
+}
