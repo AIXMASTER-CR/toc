@@ -7,11 +7,7 @@ class Main {
 }
 
 class Utility {
-    public static void show_error(String message) {
-        System.out.println("Output: Your input sequence is not valid");
-        System.out.println("Reason: " + message);
-    }
-
+    
     public static String get_input(String message) {
         Scanner scanner = new Scanner(System.in);
         String inputString;
@@ -110,8 +106,5 @@ class MealyMachine {
         System.out.println("Traversal Path: " + String.join(" -> ", traversal_path));
     }
 
-    public static void showError(String message) {
-        System.out.println("Output: Your input sequence is not valid");
-        System.out.println("Reason: " + message);
-    }
+    
 }
