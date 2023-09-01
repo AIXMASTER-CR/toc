@@ -95,10 +95,7 @@ class MealyMachine {
                 output_sequence += output;
                 traversal_path.add(current_state + "(" + input_symbol + "," + output + ")->" + next_state);
                 current_state = next_state;
-            } else {
-                Utility.show_error("Invalid transition: " + current_state + " with input " + input_symbol);
-                return;
-            }
+            } 
         }
 
         System.out.println("Output Sequence: " + output_sequence);
