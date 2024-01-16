@@ -1,0 +1,902 @@
+Dfa
+
+class DFA:
+    def __init__(self, starting_state, final_states, transitions):
+        self.starting_state = starting_state
+        self.final_states = final_states
+        self.transitions = transitions
+
+    def process_input_sequence(self, input_sequence):
+        current_state = self.starting_state
+        traversal_path = [current_state]
+
+        for input_symbol in input_sequence:
+            current_state_transition = self.transitions.get(current_state, {})
+            if input_symbol in current_state_transition:
+                next_state = current_state_transition.get(input_symbol)
+                traversal_path.append(f"{input_symbol} -> {next_state}")
+                current_state = next_state
+            else:
+                print("Output: Your string is not valid")
+                print(f"Reason: Invalid transition: State '{current_state}' with input '{input_symbol}'")
+                return
+
+        if current_state in self.final_states:
+            print("Output: Your string is valid")
+        else:
+            print("Output: Your string is not valid")
+            print(f"Reason: Your string ends at state '{current_state}' which is not a final state")
+
+        print("Traversal Path: " + " - ".join(traversal_path))
+
+
+def main():
+    message = "Enter valid input symbols (∑) (comma-separated): "
+    valid_input_string = input(message)
+    valid_inputs = set(valid_input_string.split(","))
+
+    message = "Enter states (Q) (comma-separated): "
+    state_string = input(message)
+    states = set(state_string.split(","))
+
+    message = "Enter starting state (q0): "
+    starting_state = input(message)
+
+    message = "Enter all final states (F) (comma-separated): "
+    final_state_string = input(message)
+    final_states = set(final_state_string.split(","))
+
+    transitions = {}
+
+    for state in states:
+        transitions[state] = {}
+        for valid_input in valid_inputs:
+            message = f"Enter transition (δ) for state '{state}' having input '{valid_input}': "
+            next_state = input(message)
+            transitions[state][valid_input] = next_state
+
+    dfa = DFA(starting_state, final_states, transitions)
+
+    while True:
+        message = "Enter string to be validated: "
+        input_sequence = input(message)
+        dfa.process_input_sequence(input_sequence)
+
+        choice = input("Do you want to validate another string? (y/n): ")
+        if choice.lower() == "n":
+            break
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+Mealy
+
+class MealyMachine:
+    def __init__(self, starting_state, transitions):
+        self.starting_state = starting_state
+        self.transitions = transitions
+
+    def process_input_sequence(self, input_sequence):
+        current_state = self.starting_state
+        output_sequence = ""
+        traversal_path = [current_state]
+
+        for input_symbol in input_sequence:
+            current_state_transition = self.transitions.get(current_state, {})
+            if input_symbol in current_state_transition:
+                next_state, output = current_state_transition[input_symbol]
+                output_sequence += output
+                traversal_path.append(f"{current_state}({input_symbol},{output})->{next_state}")
+                current_state = next_state
+            else:
+                print("Output: Your input sequence is not valid")
+                print(f"Reason: Invalid transition: State '{current_state}' with input '{input_symbol}'")
+                return
+
+        print("Output Sequence:", output_sequence)
+        print("Traversal Path:", " -> ".join(traversal_path))
+
+
+def main():
+    message = "Enter valid input symbols (comma-separated): "
+    valid_input_string = input(message)
+    valid_inputs = set(valid_input_string.split(","))
+
+    message = "Enter states (Q) (comma-separated): "
+    state_string = input(message)
+    states = set(state_string.split(","))
+
+    message = "Enter starting state (q0): "
+    starting_state = input(message)
+
+    transitions = {}
+
+    for state in states:
+        transitions[state] = {}
+        for valid_input in valid_inputs:
+            message = f"Enter next state for transition '{state}' with input '{valid_input}': "
+            next_state = input(message)
+            message = f"Enter output for transition '{state}' with input '{valid_input}': "
+            output = input(message)
+            transitions[state][valid_input] = (next_state, output)
+
+    mealy_machine = MealyMachine(starting_state, transitions)
+
+    while True:
+        message = "Enter input sequence to be processed: "
+        input_sequence = input(message)
+        mealy_machine.process_input_sequence(input_sequence)
+
+        choice = input("Do you want to process another input sequence? (y/n): ")
+        if choice.lower() == "n":
+            break
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+Moore
+
+
+class MooreMachine:
+    def __init__(self, starting_state, transitions, outputs):
+        self.starting_state = starting_state
+        self.transitions = transitions
+        self.outputs = outputs
+
+    def process_input_sequence(self, input_sequence):
+        current_state = self.starting_state
+        output_sequence = self.outputs[current_state]  # Include the initial state's output
+        traversal_path = [current_state]
+
+        for input_symbol in input_sequence:
+            current_state_transition = self.transitions.get(current_state, {})
+            if input_symbol in current_state_transition:
+                next_state = current_state_transition[input_symbol]
+                output_sequence += self.outputs[next_state]  # Get output associated with the next state
+                traversal_path.append(f"{current_state}({input_symbol},{self.outputs[next_state]})->{next_state}")
+                current_state = next_state
+            else:
+                print("Output: Your input sequence is not valid")
+                print(f"Reason: Invalid transition: State '{current_state}' with input '{input_symbol}'")
+                return
+
+        print("Output Sequence:", output_sequence)
+        print("Traversal Path:", " -> ".join(traversal_path))
+
+
+def main():
+    message = "Enter valid input symbols (comma-separated): "
+    valid_input_string = input(message)
+    valid_inputs = set(valid_input_string.split(","))
+
+    message = "Enter states (Q) (comma-separated): "
+    state_string = input(message)
+    states = set(state_string.split(","))
+
+    message = "Enter starting state (q0): "
+    starting_state = input(message)
+
+    outputs = {}  # Modify to store outputs associated with states
+
+    for state in states:
+        message = f"Enter output for state '{state}': "
+        output = input(message)
+        outputs[state] = output
+
+    transitions = {}
+
+    for state in states:
+        transitions[state] = {}
+        for valid_input in valid_inputs:
+            message = f"Enter next state for transition '{state}' with input '{valid_input}': "
+            next_state = input(message)
+            transitions[state][valid_input] = next_state
+
+    moore_machine = MooreMachine(starting_state, transitions, outputs)
+
+    while True:
+        message = "Enter input sequence to be processed: "
+        input_sequence = input(message)
+        moore_machine.process_input_sequence(input_sequence)
+
+        choice = input("Do you want to process another input sequence? (y/n): ")
+        if choice.lower() == "n":
+            break
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+Cfg to pda
+
+rules = [input().split() for _ in range(int(input("Enter number of production rules: ")))]
+
+non_terminals = {rule[0] for rule in rules}
+terminals = set()
+for rule in rules:
+    for prod in rule[1].split('|'):
+        for ch in prod:
+            if ch.islower() or ch.isdigit():
+                terminals.add(ch)
+terminals.add('#')
+
+print("PDA Production Rules:")
+for non_term in non_terminals:
+    print(f"dl(q,null,{non_term}) --> ", end='')
+    first = True
+    for rule in rules:
+        if rule[0] == non_term:
+            for prod in rule[1].split('|'):
+                if not first:
+                    print(" | ", end='')
+                print(f"dl(q,{prod})", end='')
+                first = False
+    print()
+
+for term in terminals:
+    if term == '#':
+        print("dl(q,null,null) --> dl(q,null)")
+    else:
+        print(f"dl(q,{term},{term}) --> dl(q,null)")
+
+
+
+
+
+
+Cfg to cnf
+
+import string
+
+def remove_char(string, pos):
+    new_string = ""
+    for i in range(len(string)):
+        if str(i) not in pos:
+            new_string += string[i]
+    return new_string
+
+from itertools import permutations
+
+NT_symbol = input("Enter the NonTerminal Symbols: ").split(" ")
+T_symbol = input("Enter the Terminal Symbols: ").split(" ")
+
+main = {}
+
+#Eliminating NULL Production
+n = []
+for i in NT_symbol:
+    main[i] = input(i + " -> ").split("/")
+
+for i in main:
+    for k in main[i]:
+        for u in k:
+            if u=="^":
+                n.append(i)
+                break
+
+n = [*set(n)]
+for i in main:
+    for k in main[i]:
+        pos = ""
+        m = []
+        possible_comb = []
+
+        for u in range(len(k)):
+            if k[u] in n:
+                    pos += str(u)
+
+        for b in range(len(pos)):
+            temp = [''.join(p) for p in permutations(pos, b + 1)]
+            possible_comb = possible_comb + temp
+
+        for b in possible_comb:
+            new_k = k
+            if k != "^":
+                m.append(remove_char(k, b))
+        main[i] = main[i] + list(set(m))
+    main[i] = [production.replace('^', '') for production in main[i]]
+
+# Removing unit productions
+unit_prod = {}
+
+for i in NT_symbol:
+    unit_prod[i] = []
+
+for i in main:
+    for b in main[i]:
+        if b in NT_symbol:
+            unit_prod[i].append(b)
+
+for i in unit_prod:
+    for j in unit_prod[i]:
+        for k in main[i]:
+            if k == j:
+                main[i].remove(k)
+
+for i in unit_prod:
+    for mt in unit_prod[i]:
+                for k in main[mt]:
+                    main[i].append(k)
+
+print("\nAFTER REMOVING NULL AND UNIT PRODUCTION")
+for i in main:
+    print(i + " -> ", end="")
+    for ele in range(len(main[i])):
+        if(main[i][ele]!=""):
+            b = main[i][ele]
+            print(b, end="/")
+    print()
+
+print("\nConverting to CNF form: ")
+
+letter = len(string.ascii_uppercase)
+
+for sym in NT_symbol:
+    for i in range(len(main[sym])):
+        b = main[sym][i]
+        count_NT = 0
+        count_T = 0
+
+        for j in b:
+            if j.isupper():
+                count_NT += 1
+            elif j.islower():
+                count_T += 1
+
+        if count_NT == 3:
+            New_NT = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT)
+            main[New_NT] = [b[0:2]]
+            main[sym][i] = New_NT + b[2]
+
+        elif count_T == 1 and count_NT == 2:
+            New_NT = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT)
+            main[New_NT] = [b[0]]
+            New_NT2 = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT2)
+            main[New_NT2] = [b[1:]]
+            main[sym][i] = New_NT + New_NT2
+
+        elif count_T == 1 and count_NT == 1:
+            New_NT = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT)
+            main[New_NT] = [b[0]]
+            main[sym][i] = New_NT + b[1]
+        
+        elif count_T == 2 and count_NT == 1:
+            New_NT = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT)
+            main[New_NT] = [b[0]]
+            New_NT1 = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT1)
+            main[New_NT1] = [b[1]]
+            main[sym][i] = New_NT + New_NT1+b[2]
+            b=main[sym][i]
+            New_NT2 = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT2)
+            main[New_NT2] = [b[0:2]]
+            main[sym][i] = New_NT2+b[2]
+        elif count_T == 2 and count_NT == 0:
+            New_NT = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT)
+            main[New_NT] = [b[0]]
+            New_NT1 = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT1)
+            main[New_NT1] = [b[1]]
+            main[sym][i] = New_NT + New_NT1
+        elif count_T == 2 and count_NT == 2:
+            New_NT = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT)
+            main[New_NT] = [b[0]]
+            New_NT1 = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT1)
+            main[New_NT1] = [b[1]]
+            main[sym][i] = New_NT + New_NT1 + b[2:]
+            
+            b=main[sym][i]
+            New_NT = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT)
+            main[New_NT] = [b[0:2]]
+            New_NT1 = string.ascii_uppercase[letter - 1]
+            letter -= 1
+            NT_symbol.append(New_NT1)
+            main[New_NT1] = [b[2:]]
+            main[sym][i] = New_NT + New_NT1
+
+
+for i in main:
+    print(i + " -> ", end="")
+    unique_productions = set()
+    for ele in range(len(main[i])):
+        if main[i][ele] != "":
+            b = main[i][ele]
+            if b not in unique_productions:
+                print(b, end="/")
+                unique_productions.add(b)
+    
+    print()
+
+    
+    
+    
+
+
+Enfa
+
+
+class Type:
+    SYMBOL = 1
+    CONCAT = 2
+    UNION  = 3
+    KLEENE = 4
+
+class ExpressionTree:
+
+    def __init__(self, _type, value=None):
+        self._type = _type
+        self.value = value
+        self.left = None
+        self.right = None
+    
+
+def constructTree(regexp):
+    stack = []
+    for c in regexp:
+        if c.isalpha():
+            stack.append(ExpressionTree(Type.SYMBOL, c))
+        else:
+            if c == "+":
+                z = ExpressionTree(Type.UNION)
+                z.right = stack.pop()
+                z.left = stack.pop()
+            elif c == ".":
+                z = ExpressionTree(Type.CONCAT)
+                z.right = stack.pop()
+                z.left = stack.pop()
+            elif c == "*":
+                z = ExpressionTree(Type.KLEENE)
+                z.left = stack.pop()
+            stack.append(z)
+
+    return stack[0]
+
+def inorder(et):
+    if et._type == Type.SYMBOL:
+        print(et.value)
+    elif et._type == Type.CONCAT:
+        inorder(et.left)
+        print(".")
+        inorder(et.right)
+    elif et._type == Type.UNION:
+        inorder(et.left)
+        print("+")
+        inorder(et.right)
+    elif et._type == Type.KLEENE:
+        inorder(et.left)
+        print("*")
+
+def higherPrecedence(a, b):
+    p = ["+", ".", "*"]
+    return p.index(a) > p.index(b)
+
+def postfix(regexp):
+    # adding dot "." between consecutive symbols
+    temp = []
+    for i in range(len(regexp)):
+        if i != 0\
+            and (regexp[i-1].isalpha() or regexp[i-1] == ")" or regexp[i-1] == "*")\
+            and (regexp[i].isalpha() or regexp[i] == "("):
+            temp.append(".")
+        temp.append(regexp[i])
+    regexp = temp
+    
+    stack = []
+    output = ""
+
+    for c in regexp:
+        if c.isalpha():
+            output = output + c
+            continue
+
+        if c == ")":
+            while len(stack) != 0 and stack[-1] != "(":
+                output = output + stack.pop()
+            stack.pop()
+        elif c == "(":
+            stack.append(c)
+        elif c == "*":
+            output = output + c
+        elif len(stack) == 0 or stack[-1] == "(" or higherPrecedence(c, stack[-1]):
+            stack.append(c)
+        else:
+            while len(stack) != 0 and stack[-1] != "(" and not higherPrecedence(c, stack[-1]):
+                output = output + stack.pop()
+            stack.append(c)
+
+    while len(stack) != 0:
+        output = output + stack.pop()
+
+    return output
+
+class FiniteAutomataState:
+    def __init__(self):
+        self.next_state = {}
+
+def evalRegex(et):
+    # returns equivalent E-NFA for given expression tree (representing a Regular
+    # Expression)
+    if et._type == Type.SYMBOL:
+        return evalRegexSymbol(et)
+    elif et._type == Type.CONCAT:
+        return evalRegexConcat(et)
+    elif et._type == Type.UNION:
+        return evalRegexUnion(et)
+    elif et._type == Type.KLEENE:
+        return evalRegexKleene(et)
+
+def evalRegexSymbol(et):
+    start_state = FiniteAutomataState()
+    end_state   = FiniteAutomataState()
+    
+    start_state.next_state[et.value] = [end_state]
+    return start_state, end_state
+
+def evalRegexConcat(et):
+    left_nfa  = evalRegex(et.left)
+    right_nfa = evalRegex(et.right)
+
+    left_nfa[1].next_state['epsilon'] = [right_nfa[0]]
+    return left_nfa[0], right_nfa[1]
+
+def evalRegexUnion(et):
+    start_state = FiniteAutomataState()
+    end_state   = FiniteAutomataState()
+
+    up_nfa   = evalRegex(et.left)
+    down_nfa = evalRegex(et.right)
+
+    start_state.next_state['epsilon'] = [up_nfa[0], down_nfa[0]]
+    up_nfa[1].next_state['epsilon'] = [end_state]
+    down_nfa[1].next_state['epsilon'] = [end_state]
+
+    return start_state, end_state
+
+def evalRegexKleene(et):
+    start_state = FiniteAutomataState()
+    end_state   = FiniteAutomataState()
+
+    sub_nfa = evalRegex(et.left)
+
+    start_state.next_state['epsilon'] = [sub_nfa[0], end_state]
+    sub_nfa[1].next_state['epsilon'] = [sub_nfa[0], end_state]
+
+    return start_state, end_state
+
+def printStateTransitions(state, states_done, symbol_table):
+    if state in states_done:
+        return
+
+    states_done.append(state)
+
+    for symbol in list(state.next_state):
+        line_output = "q" + str(symbol_table[state]) + "\t\t" + symbol + "\t\t\t"
+        for ns in state.next_state[symbol]:
+            if ns not in symbol_table:
+                symbol_table[ns] = 1 + sorted(symbol_table.values())[-1]
+            line_output = line_output + "q" + str(symbol_table[ns]) + " "
+
+        print(line_output)
+
+        for ns in state.next_state[symbol]:
+            printStateTransitions(ns, states_done, symbol_table)
+
+def printTransitionTable(finite_automata):
+    print("State\tSymbol\tNext state")
+    printStateTransitions(finite_automata[0], [], {finite_automata[0]:0})
+
+
+r = input("Enter regex: ")
+pr = postfix(r)
+et = constructTree(pr)
+
+#inorder(et)
+
+fa = evalRegex(et)
+printTransitionTable(fa)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Smis
+
+
+
+
+	1.	Mean , median , mode
+
+def calculate_mean(numbers):
+    return sum(numbers) / len(numbers)
+
+def calculate_median(numbers):
+    sorted_numbers = sorted(numbers)
+    n = len(sorted_numbers)
+    
+    if n % 2 == 0:
+        mid1 = sorted_numbers[n // 2 - 1]
+        mid2 = sorted_numbers[n // 2]
+        median = (mid1 + mid2) / 2
+    else:
+        median = sorted_numbers[n // 2]
+    
+    return median
+
+def calculate_mode(numbers):
+    frequency = {}
+    
+    for num in numbers:
+        frequency[num] = frequency.get(num, 0) + 1
+    
+    max_freq = max(frequency.values())
+    mode = [key for key, value in frequency.items() if value == max_freq]
+    
+    return mode
+
+# Input the data
+data = [int(x) for x in input("Enter the space-separated numbers: ").split()]
+
+# Calculate and print the mean, median, and mode
+mean_value = calculate_mean(data)
+median_value = calculate_median(data)
+mode_value = calculate_mode(data)
+
+print(f"Mean: {mean_value}")
+print(f"Median: {median_value}")
+print(f"Mode: {mode_value}")
+
+
+
+	1.	GM, HM
+
+def calculate_geometric_mean(numbers):
+    product = 1
+    
+    for num in numbers:
+        product *= num
+    
+    geometric_mean = product**(1/len(numbers))
+    return geometric_mean
+
+def calculate_harmonic_mean(numbers):
+    reciprocal_sum = sum(1/num for num in numbers)
+    
+    harmonic_mean = len(numbers) / reciprocal_sum
+    return harmonic_mean
+
+# Input the data
+data = [float(x) for x in input("Enter the space-separated numbers: ").split()]
+
+# Calculate and print the geometric and harmonic mean
+geometric_mean_value = calculate_geometric_mean(data)
+harmonic_mean_value = calculate_harmonic_mean(data)
+
+print(f"Geometric Mean: {geometric_mean_value}")
+print(f"Harmonic Mean: {harmonic_mean_value}")
+
+
+
+
+
+
+Skewness
+
+
+def calculate_mean(numbers):
+    return sum(numbers) / len(numbers)
+
+def calculate_median(numbers):
+    sorted_numbers = sorted(numbers)
+    n = len(sorted_numbers)
+    
+    if n % 2 == 0:
+        mid1 = sorted_numbers[n // 2 - 1]
+        mid2 = sorted_numbers[n // 2]
+        median = (mid1 + mid2) / 2
+    else:
+        median = sorted_numbers[n // 2]
+    
+    return median
+
+def calculate_standard_deviation(numbers, mean_value):
+    n = len(numbers)
+    squared_diff = sum((x - mean_value)**2 for x in numbers)
+    variance = squared_diff / n
+    std_deviation = variance**0.5
+    return std_deviation
+
+def calculate_karl_pearson_skewness(numbers):
+    mean_value = calculate_mean(numbers)
+    median_value = calculate_median(numbers)
+    std_deviation = calculate_standard_deviation(numbers, mean_value)
+
+    skewness = 3 * (mean_value - median_value) / std_deviation
+    return skewness
+
+# Input the data
+data = [float(x) for x in input("Enter the space-separated numbers: ").split()]
+
+# Calculate and print the Karl Pearson skewness
+skewness_value = calculate_karl_pearson_skewness(data)
+
+print(f"Karl Pearson Skewness: {skewness_value:.4f}")
+
+
+
+
+Chi 
+
+data = []
+for i in range(int(input("Enter the number of terms: "))):
+    ob = int(input(f"Enter the observed frequency {i + 1}: "))
+    ex = int(input(f"Enter the expected frequency {i + 1}: "))
+    data.append((ob, ex))
+
+print("Items:", data)
+
+chi = 0
+for o, e in data:
+    chi += ((o - e) ** 2 / e)
+
+print("Calculated Chi-square:", chi)
+
+critical_value = float(input("Enter the critical value for chi-square test: "))
+
+if chi > critical_value:
+    print("Reject the null hypothesis")
+else:
+    print("Accept the null hypothesis")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+More
+
+
+Discrete series.. 
+
+
+def mean_discrete(items, frequencies):
+    weighted_sum = sum(item * freq for item, freq in zip(items, frequencies))
+    total_freq = sum(frequencies)
+    return weighted_sum / total_freq
+
+def median_discrete(items, frequencies):
+    data = []
+    for item, freq in zip(items, frequencies):
+        data.extend([item] * freq)
+
+    sorted_data = sorted(data)
+    n = len(sorted_data)
+    mid = n // 2
+
+    if n % 2 == 0:
+        median = (sorted_data[mid - 1] + sorted_data[mid]) / 2
+    else:
+        median = sorted_data[mid]
+
+    return median
+
+# Example usage for discrete series
+items_discrete = [10, 15, 20, 25, 30]
+frequencies_discrete = [2, 3, 1, 4, 2]
+
+print("Mean for discrete series:", mean_discrete(items_discrete, frequencies_discrete))
+print("Median for discrete series:", median_discrete(items_discrete, frequencies_discrete))
+Continuous
+
+def mean_continuous(midpoints, frequencies):
+    sum_fx = sum(mid * freq for mid, freq in zip(midpoints, frequencies))
+    sum_f = sum(frequencies)
+    return sum_fx / sum_f
+
+def median_continuous(midpoints, frequencies, n):
+    cumulative_freq = [sum(frequencies[:i+1]) for i in range(len(frequencies))]
+    
+    # Find the midpoint class
+    for i, cum_freq in enumerate(cumulative_freq):
+        if cum_freq >= n // 2:
+            mid_class = i
+            break
+    
+    L = midpoints[mid_class]
+    f = frequencies[mid_class]
+    c = sum(frequencies[:mid_class])
+    h = midpoints[1] - midpoints[0]
+    
+    median = L + ((n // 2 - c) / f) * h
+    return median
+
+# Example usage for continuous series
+midpoints_continuous = [10, 20, 30, 40, 50]
+frequencies_continuous = [3, 5, 8, 4, 2]
+n_continuous = sum(frequencies_continuous)
+
+print("Mean for continuous series:", mean_continuous(midpoints_continuous, frequencies_continuous))
+print("Median for continuous series:", median_continuous(midpoints_continuous, frequencies_continuous, n_continuous))
+
+
+
+
+
+
+
