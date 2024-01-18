@@ -1065,3 +1065,343 @@ else:
 
 
 
+
+
+
+
+
+
+GT
+
+
+
+#HAVELS HAKIMI 		3
+
+def havel_hakimi_algorithm(degree_sequence):
+    # Sort the degree sequence in non-increasing order
+    degree_sequence.sort(reverse=True)
+
+    # Continue the algorithm until the degree sequence is empty or negative
+    while degree_sequence:
+        # Remove the first element (highest degree) from the sequence
+        highest_degree = degree_sequence.pop(0)
+
+        # Check if the remaining sequence is long enough
+        if highest_degree > len(degree_sequence):
+            print("Degree sequence cannot be realized as a graph.")
+            return
+
+        # Subtract 1 from the next 'highest_degree' elements in the sequence
+        for i in range(highest_degree):
+            degree_sequence[i] -= 1
+
+        # Sort the sequence again in non-increasing order
+        degree_sequence.sort(reverse=True)
+
+    print("Degree sequence can be realized as a graph.")
+
+# Example usage:
+degree_sequence = [4, 3, 3, 2, 2, 1, 1, 1]
+havel_hakimi_algorithm(degree_sequence)
+
+# Dijkstras shortest path   expt 4
+from queue import PriorityQueue
+
+graph = [
+    [0, 4, 0, 0, 0, 0, 0, 8, 0],
+    [4, 0, 8, 0, 0, 0, 0, 11, 0],
+    [0, 8, 0, 7, 0, 4, 0, 0, 2],
+    [0, 0, 7, 0, 9, 14, 0, 0, 0],
+    [0, 0, 0, 9, 0, 10, 0, 0, 0],
+    [0, 0, 4, 14, 10, 0, 2, 0, 0],
+    [0, 0, 0, 0, 0, 2, 0, 1, 6],
+    [8, 11, 0, 0, 0, 0, 1, 0, 7],
+    [0, 0, 2, 0, 0, 0, 6, 7, 0],
+]
+v = 9  # no of vertices
+u = (0, 0)  # current vertex
+s = 0  # source
+s = int(input("Enter Source: "))
+vis = [False] * v
+ans = [100000] * v
+ans[s] = 0
+q = PriorityQueue()
+q.put((0, s))  # dist,vertex
+while not (q.empty()):
+    u = q.get()
+    if vis[u[1]]:
+        continue
+    vis[u[1]] == True
+    for i in range(v):
+        vertex = i
+        dist = graph[u[1]][i]
+        if ans[vertex] > ans[u[1]] + dist and dist != 0:
+            ans[vertex] = ans[u[1]] + dist
+            q.put((ans[vertex], vertex))
+for i in range(v):
+    print(s, "-->", i, "=", ans[i])
+
+
+# prims algorithm     5
+from queue import PriorityQueue
+
+graph = [
+    [0, 2, 0, 6, 0],
+    [2, 0, 3, 8, 5],
+    [0, 3, 0, 0, 7],
+    [6, 8, 0, 0, 9],
+    [0, 5, 7, 9, 0],
+]
+v = 5
+ans = 0
+vis = [False] * v
+q = PriorityQueue()
+q.put((0, (0, 0)))  # dist,svertex,dvertex
+print("Edge\tDistance")
+while not (q.empty()):
+    u = q.get()
+    if vis[u[1][0]]:
+        continue
+    vis[u[1][0]] = True
+    ans += u[0]
+    if u[1] != (0, 0):
+        print(u[1][0], "-->", u[1][0], "=", u[0])
+    for i in range(v):
+        if graph[u[1][0]][i] != 0:
+            vertex = i
+            dist = graph[u[1][0]][i]
+            q.put((dist, (vertex, u[1][0])))
+
+print("Minimum cost=", ans)
+
+
+
+# Kruskal's Algorithm         	6
+from queue import PriorityQueue
+
+def find(p, x):
+    if p[x] == x:
+        return x
+    return find(p, p[x])
+
+def union(p, x, y):
+    rx = find(p, x)
+    ry = find(p, y)
+    if rx == ry:
+        return
+    p[ry] = rx
+
+graph = []
+v = 9
+v = int(input("Enter no of Vertices:"))
+for i in range(v):
+    r = []
+    for j in range(v):
+        r.append(int(input()))
+    graph.append(r)
+ans = 0
+count = 1
+p = list(range(0, v))
+q = PriorityQueue()
+for i in range(v):
+    for j in range(v):
+        if graph[i][j] != 0:
+            q.put((graph[i][j], i, j))  # dist,source,desti
+            graph[j][i] = 0
+print("Edges\t\t Distance")
+while count < v:
+    u = q.get()
+    rx = find(p, u[1])
+    ry = find(p, u[2])
+    if rx != ry:
+        union(p, rx, ry)
+        ans += u[0]
+        print(u[1], "-->", u[2], "\t", u[0])
+        count += 1
+print("Minimum cost=", ans)
+
+
+
+# BFS				7
+import queue
+myqueue=queue.Queue()
+graph = []
+v = int(input("Enter no of Vertices:"))
+vis=[False]*v
+for i in range(v):
+    r = []
+    for j in range(v):
+        r.append(int(input()))
+    graph.append(r)
+start=int(input("enter start vertex:"))
+myqueue.put(start)
+print("BFS:",end="")
+while not(myqueue.empty()):
+    cur=myqueue.get()
+    if vis[cur]:
+        continue
+    vis[cur]=True
+    print(cur,end=" ")
+    for i in range(v):
+        if graph[cur][i]!=0 and not(vis[i]):
+            myqueue.put(i)
+print("")
+
+
+# DFS			8
+stack=[]
+graph = []
+i=0
+v = int(input("Enter no of Vertices:"))
+vis=[False]*v
+for i in range(v):
+    r = []
+    for j in range(v):
+        r.append(int(input()))
+    graph.append(r)
+start=int(input("enter start vertex:"))
+stack.append(start)
+print("DFS:",end="")
+while len(stack)!=0:
+    cur=stack.pop()
+    if vis[cur]:
+        continue
+    vis[cur]=True
+    print(cur,end=" ")
+    i=v-1
+    while i>=0:
+        if graph[cur][i]!=0 and not(vis[i]):
+            stack.append(i)
+        i=i-1
+print("")
+
+
+#Graph Colouring				9
+class Graph:
+    def __init__(self, vertices):
+        self.vertices = vertices
+        self.graph = [[0] * vertices for _ in range(vertices)]
+
+    def is_safe(self, v, c, color, result):
+        for i in range(self.vertices):
+            if self.graph[v][i] == 1 and color[i] == c:
+                return False
+        return True
+
+    def graph_coloring_util(self, m, color, v, result):
+        if v == self.vertices:
+            return True
+
+        for c in range(1, m + 1):
+            if self.is_safe(v, c, color, result):
+                color[v] = c
+                if self.graph_coloring_util(m, color, v + 1, result):
+                    return True
+                color[v] = 0
+
+    def get_graph_input(self):
+        print("Enter the adjacency matrix:")
+        for i in range(self.vertices):
+            row = list(map(int, input().split()))
+            self.graph[i] = row
+
+    def graph_coloring(self):
+        m = 1  # Start with 1 color
+        color = [0] * self.vertices
+        result = []
+
+        while True:
+            if self.graph_coloring_util(m, color, 0, result):
+                break
+            m += 1
+
+        print(f"Chromatic Number: {m}")
+        print("Vertex Colors:", color)
+
+# Get user input for the number of vertices
+num_vertices = int(input("Enter the number of vertices: "))
+g = Graph(num_vertices)
+
+# Get user input for the adjacency matrix
+g.get_graph_input()
+
+# Perform graph coloring and print the result
+g.graph_coloring()
+
+'''
+0 1 1 0 0 0 0 0 1
+1 0 0 1 0 0 0 0 1
+1 0 0 0 1 0 0 0 1
+0 1 0 0 0 1 0 0 0
+0 0 1 0 0 0 1 0 0
+0 0 0 1 0 0 0 1 1
+0 0 0 0 1 0 0 1 1
+0 0 0 0 0 1 1 0 1
+1 1 1 0 0 1 1 1 0
+'''
+
+
+#TSP						10
+n = int(input("Enter the total no of nodes:\n"))
+matrix = [[0] * n for _ in range(n)]
+visited = [0] * n
+cost = 0
+
+def tsp(c):
+    global cost
+    nearest, min_val, temp = 999, 999, 0
+    for i in range(n):
+        if matrix[c][i] != 0 and visited[i] == 0:
+            if matrix[c][i] < min_val:
+                min_val = matrix[c][i]
+                temp = matrix[c][i]
+                nearest = i
+    if min_val != 999:
+        cost += temp
+    return nearest
+
+def minimum_cost(city):
+    global cost
+    nearest = tsp(city)
+    visited[city] = 1
+    print(city + 1, end=" ")
+
+    if nearest == 999:
+        nearest = 0
+        print(nearest + 1)
+        cost += matrix[city][nearest]
+        return
+
+    minimum_cost(nearest)
+
+print("Enter the adjacency matrix:")
+for i in range(n):
+    matrix[i] = list(map(int, input().split()))
+
+print("\nPath:", end=" ")
+minimum_cost(0)
+print("\nThe total cost:", cost)
+
+
+
+'''
+0 5 4 0 0 0 0 0 3
+5 0 0 3 0 0 0 0 1
+4 0 0 0 3 0 0 0 1
+0 3 0 0 0 8 0 0 2
+0 0 3 0 0 0 0 9 2
+0 0 0 8 0 0 10 0 7
+0 0 0 0 0 10 0 11 7
+0 0 0 0 9 0 11 0 7
+3 1 1 2 2 7 7 7 0
+'''
+
+
+
+
+
+
+
+
+
+
