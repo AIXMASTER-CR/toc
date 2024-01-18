@@ -994,6 +994,41 @@ print(f"Karl Pearson Skewness: {skewness_value:.4f}")
 
 Chi 
 
+
+Chi square
+
+
+data = []
+for i in range(int(input("Enter the number of terms: "))):
+    ob = int(input(f"Enter the observed frequency {i + 1}: "))
+    ex = int(input(f"Enter the expected frequency {i + 1}: "))
+    data.append((ob, ex))
+
+print("Items:", data)
+
+chi = 0
+for o, e in data:
+    chi += ((o - e) ** 2 / e)
+
+print("Calculated Chi-square:", chi)
+
+critical_value = float(input("Enter the critical value for chi-square test: "))
+
+if chi > critical_value:
+    print("Reject the null hypothesis")
+else:
+    print("Accept the null hypothesis")
+
+
+
+
+
+
+
+2. chi
+
+
+
 c_value = float(input("Enter the critical value : "))
 terms=int(input("Enter the number of terms: "))
 attributes=int(input("Enter the number of attributes: "))
