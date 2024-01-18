@@ -1,7 +1,8 @@
 
 # Initialization of the DFA
 
-print(“comma separated ip”)
+print(comma separated ip)
+
 ns = set(input("Enter the states: ").split(","))
 ni = set(input("Enter the inputs: ").split(","))
 q = input("Enter the start state: ")
@@ -19,7 +20,7 @@ while True:
     path = [q]
 
     for i in range(len(ip)):
-        next=transitions[path[i]][ip[i]])
+        next=transitions[path[i]][ip[i]]
         path.append(next)
 
     print("Path:")
