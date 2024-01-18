@@ -994,28 +994,57 @@ print(f"Karl Pearson Skewness: {skewness_value:.4f}")
 
 Chi 
 
-data = []
-for i in range(int(input("Enter the number of terms: "))):
-    ob = int(input(f"Enter the observed frequency {i + 1}: "))
-    ex = int(input(f"Enter the expected frequency {i + 1}: "))
-    data.append((ob, ex))
+c_value = float(input("Enter the critical value : "))
+terms=int(input("Enter the number of terms: "))
+attributes=int(input("Enter the number of attributes: "))
+data_list = []
+for i in range(attributes):
+    print(f'Enter value for attribute {i+1}:')
+    row = []
+    for j in range(terms):
+        num = float(input(f'Enter term {j+1} for attribute {i+1} : '))
+        row.append(num)
+    data_list.append(row)
+print(data_list)
+        
+horizontal_sum = []
+for i in range(terms):
+    tot = 0
+    for j in range(attributes):
+        tot += data_list[j][i]
+    horizontal_sum.append(tot)
+    
+vertical_sum = []
+for i in range(attributes):
+    pot = 0
+    for j in range(terms):
+        pot+= data_list[i][j]
+    vertical_sum.append(pot)
+print(vertical_sum)
 
-print("Items:", data)
+total_sum = sum(horizontal_sum)
 
-chi = 0
-for o, e in data:
-    chi += ((o - e) ** 2 / e)
-
-print("Calculated Chi-square:", chi)
-
-critical_value = float(input("Enter the critical value for chi-square test: "))
-
-if chi > critical_value:
-    print("Reject the null hypothesis")
+expected_value = []
+for i in range(attributes):
+    row1 = []
+    for j in range(terms):
+        exp = (vertical_sum[i]*horizontal_sum[j])/total_sum
+        row1.append(exp)
+    expected_value.append(row1)
+    
+output_list = []
+for i in range(attributes):
+    
+    for j in range(terms):
+        exp = (((data_list[i][j])-expected_value[i][j])**2)/expected_value[i][j]
+        
+    output_list.append(exp)
+final_output = sum(output_list)
+print(f'The chi square value of the given dataset is {final_output}')
+if(final_output>c_value):
+    print('Null rejected, Alternate accepted')
 else:
-    print("Accept the null hypothesis")
-
-
+    print('Null not rejected, alternate rejected')
 
 
 
