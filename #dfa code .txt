@@ -1,0 +1,402 @@
+#dfa code 
+def dfa_acceptance(input_string, char1, char2):
+    if len(input_string) >= 2 and input_string[2] == char1 and input_string[1] == char2:
+        return True
+    return False
+n1 = input("Enter the second  character: ")
+n2 = input("Enter the  character: ")
+user_input = input("Enter the string: ")
+if dfa_acceptance(user_input, n1, n2):
+    print("String is accepted by the DFA.")
+else:
+    print("String is not accepted by the DFA.")
+
+def dfa_acceptance(input_string, char1, char2):
+    if len(input_string) >= 4:
+        middle_index = len(input_string) // 2
+        if input_string[middle_index - 1] == char1 and input_string[middle_index] == char2:
+            return True
+    return False
+n1 = input("Enter the first middle character: ")
+n2 = input("Enter the second middle character: ")
+user_input = input("Enter the string: ")
+if dfa_acceptance(user_input, n1, n2):
+    print("String is accepted by the DFA.")
+else:
+    print("String is not accepted by the DFA.")
+
+
+C = 'A'
+n = int(input("\nEnter the size of the string\n"))
+a = []
+if n == 0:
+    print("A\tB\tD")
+else:
+    print("Enter the string (0 or 1, separated by spaces):")
+    input_string = input()
+    a = [int(x) for x in input_string.split()]
+    a.append(-1)
+    i = 0
+    print("The states traveled are:")
+    while a[i] == 0 and i < n:
+        c = 'A'
+        print(c, end="\t")
+        i += 1
+    while a[i] == 1 and a[i + 1] == 0 and i < n:
+        c = 'B'
+        print(c, end="\t")
+        print("C", end="\t")
+        i += 2
+    while a[i] == 1 and i < n:
+        c = 'D'
+        print(c, end="\t")
+        i += 1
+    if c in ('A', 'B'):
+        c = 'D'
+    if c == 'D' and i == n:
+        print("\nThe Entered string is valid")
+    else:
+        print("\nThe Entered string is not valid")
+
+mealy
+n = int(input("Enter the number of elements of the string: "))
+ar = input("Enter the string: ")
+state = "q0"
+p = 0
+
+print("States\tOutput")
+
+i = 0  # Initialize i here, and no need to declare it before the loop
+
+while i < n:  # Change to a while loop
+
+    if state == "q0":
+        if ar[i] == 'a':
+            state = "q1"
+            print(state, end="\t\t")
+        else:
+            state = "q0"
+            print(state, end="\t\t")
+            print(0)
+
+        i += 1  # Move to the next character
+
+    elif state == "q1":
+        if ar[i] == 'b':
+            state = "q2"
+            print(state, end="\t\t")
+        else:
+            state = "q1"
+            print(state, end="\t\t")
+            print(0)
+
+        i += 1  # Move to the next character
+
+    elif state == "q2":
+        if ar[i] == 'a':
+            state = "q3"
+            p += 1
+            print(state, end="\t\t")
+            print(1)
+        else:
+            state = "q0"
+            print(state, end="\t\t")
+            print(0)
+
+        i += 1  # Move to the next character
+
+    elif state == "q3":
+        if ar[i] == 'a':
+            state = "q1"
+            print(state, end="\t\t")
+        else:
+            state = "q2"
+            print(state, end="\t\t")
+            print(0)
+
+        i += 1  # Move to the next character
+
+print("Number of occurrences of the string 'aba' is:", p)
+
+mooore
+def moore_machine(input_string):
+    state = "q0"
+    count = 0
+    n = len(input_string)
+    print("q0 0")
+    for i in range(n):
+        if input_string[i] == 'a' and state == "q0":
+            state = "q1"
+            op = 0
+            print(f"q1 {op}")
+        elif input_string[i] == 'b' and state == "q0":
+            state = "q0"
+            op = 0
+            print(f"q0 {op}")
+        elif input_string[i] == 'b' and state == "q1":
+            state = "q2"
+            op = 0
+            print(f"q2 {op}")
+        elif input_string[i] == 'a' and state == "q1":
+            state = "q1"
+            op = 0
+            print(f"q1 {op}")
+        elif input_string[i] == 'a' and state == "q2":
+            state = "q3"
+            op = 1
+            print(f"q3 {op}")
+            count += 1
+        elif input_string[i] == 'b' and state == "q2":
+            state = "q0"
+            op = 0
+            print(f"q0 {op}")
+    return count
+input_str = "ababbaaaabbaabb"
+moore_count = moore_machine(input_str)
+print(f"Number of occurrences using Moore machine: {moore_count}")
+
+cfg ot cnf
+
+from itertools import permutations
+import string
+def remove_char(string, pos):
+    new_string = "".join([string[i] for i in range(len(string)) if str(i) not in pos])
+    return new_string
+def main():
+    NT_symbol = input("Enter the NonTerminal Symbols: ").split()
+    T_symbol = input("Enter the Terminal Symbols: ").split()
+    main = {}
+    n = []
+    for i in NT_symbol:
+        main[i] = input(f"{i} -> ").split("/")
+        for k in main[i]:
+            if '^' in k:
+                n.append(i)
+    n = set(n)
+    for i in main:
+        for k in main[i]:
+            pos = ""
+            m = []
+            possible_comb = []
+            for u in range(len(k)):
+                if k[u] in n:
+                    pos += str(u)
+            for b in range(len(pos)):
+                temp = [''.join(p) for p in permutations(pos, b + 1)]
+                possible_comb += temp
+            for b in possible_comb:
+                if k != "^":
+                    m.append(remove_char(k, b))
+            main[i] = main[i] + list(set(m))
+            main[i] = [production.replace('^', '') for production in main[i]]
+    unit_prod = {}
+    for i in NT_symbol:
+        unit_prod[i] = []
+    for i in main:
+        for b in main[i]:
+            if b in NT_symbol:
+                unit_prod[i].append(b)
+    for i in unit_prod:
+        for j in unit_prod[i]:
+            for k in main[i]:
+                if k == j:
+                    main[i].remove(k)
+    for i in unit_prod:
+        for mt in unit_prod[i]:
+            for k in main[mt]:
+                main[i].append(k)
+    print("\nAFTER REMOVING NULL AND UNIT PRODUCTION")
+    for i in main:
+        print(i + " -> ", end="")
+        for ele in range(len(main[i])):
+            if main[i][ele] != "":
+                b = main[i][ele]
+                print(b, end="/")
+        print()
+    print("\nConverting to CNF form: ")
+    letter = len(string.ascii_uppercase)
+    for sym in NT_symbol:
+        for i in range(len(main[sym])):
+            b = main[sym][i]
+            count_NT = sum(1 for j in b if j.isupper())
+            count_T = sum(1 for j in b if j.islower())
+            if count_NT == 3:
+                New_NT = string.ascii_uppercase[letter - 1]
+                letter -= 1
+                NT_symbol.append(New_NT)
+                main[New_NT] = [b[0:2]]
+                main[sym][i] = New_NT + b[2:]
+            elif count_T == 1 and count_NT == 2:
+                New_NT = string.ascii_uppercase[letter - 1]
+                letter -= 1
+                NT_symbol.append(New_NT)
+                main[New_NT] = [b[0]]
+                New_NT2 = string.ascii_uppercase[letter - 1]
+                letter -= 1
+                NT_symbol.append(New_NT2)
+                main[New_NT2] = [b[1:]]
+                main[sym][i] = New_NT + New_NT2
+    for i in main:
+        print(i + " -> ", end="")
+        unique_productions = set()
+        for ele in range(len(main[i])):
+            if main[i][ele] != "":
+                b = main[i][ele]
+                if b not in unique_productions:
+                    print(b, end="/")
+                    unique_productions.add(b)
+        print()
+if __name__ == "__main__":
+    main()
+
+
+
+cfg to pda
+
+class Pair:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+def get_symbols(production, non_terminals, terminals):
+    for ch in production:
+        if ch.isupper():
+            non_terminals.add(ch)
+        elif ch.isalnum():
+            terminals.add(ch)
+def main():
+    n = int(input("Enter number of production rules: "))
+    rules = []
+    print("Enter production rules:")
+    for _ in range(n):
+        left = input()
+        right = input()
+        rules.append(Pair(left, right))
+    non_terminals = set()
+    terminals = set()
+    for rule in rules:
+        production = rule.right
+        if "|" in production:
+            for prod in production.split("|"):
+                get_symbols(prod, non_terminals, terminals)
+        else:
+            get_symbols(production, non_terminals, terminals)
+        if production == "#":
+            terminals.add("#")
+    print("PDA Production Rules:")
+    print("dl(q0, Null, S) --> dl(q1, Null, S)")
+    for non_term in non_terminals:
+        print(f"dl(q1, Null, {non_term}) --> ", end="")
+        first = True
+        for rule in rules:
+            if rule.left == non_term:
+                production = rule.right
+                if "|" in production:
+                    for prod in production.split("|"):
+                        if not first:
+                            print(" | ", end="")
+                        print(f"dl(q1, {prod})", end="")
+                        first = False
+                else:
+                    if not first:
+                        print(" | ", end="")
+                    print(f"dl(q1, {production})", end="")
+                    first = False
+        print()
+    for term in terminals:
+        if term == "#":
+            print("dl(q1, Null, Null) --> dl(q1, Null)")
+        else:
+            print(f"dl(q1, {term}, {term}) --> dl(q1, Null)")
+    print("dl(q1, Null, Null) --> dl(q2, Null, Null)")
+if __name__ == "__main__":
+    main()
+
+
+TM
+n = int(input("\nEnter Size of the String: "))
+print("\nEnter String in terms of 0s and 1s: ", end="")
+a = ['△'] + list(input()[:n]) + ['△']
+x, r, f = 0, 0, 1
+s = 'A'
+i = 0
+print("\nTransitions for Turing Machines:")
+print(f"{s} : {a}")
+while f == 1:
+    if a[i] == '△':
+        i += 1
+        if a[i] == '△':
+            x = 1
+            f = 0
+    if a[i] == '0':
+        s = 'C'
+        a[i] = '△'
+        print(f"{s} : {a}")
+        i += 1
+        while a[i] == '0' or a[i] == '1':
+            i += 1
+        if a[i] == '△':
+            i -= 1
+            s = 'D'
+        if a[i] == '1':
+            r = 1
+            f = 0
+        elif a[i] == '△':
+            x = 1
+            f = 0
+        elif a[i] == '0':
+            a[i] = '△'
+            i -= 1
+            s = 'E'
+            print(f"{s} : {a}")
+            while a[i] == '0' or a[i] == '1':
+                i -= 1
+    elif a[i] == '1':
+        s = 'G'
+        a[i] = '△'
+        print(f"{s} : {a}")
+        i += 1
+        while a[i] == '0' or a[i] == '1':
+            i += 1
+        if a[i] == '△':
+            i -= 1
+            s = 'F'
+        if a[i] == '0':
+            r = 1
+            f = 0
+        elif a[i] == '△':
+            x = 1
+            f = 0
+        elif a[i] == '1':
+            a[i] = '△'
+            i -= 1
+            s = 'E'
+            print(f"{s} : {a}")
+            while a[i] == '0' or a[i] == '1':
+                i -= 1
+if r == 1:
+    print(f"{s} : {a}")
+    print("String is not a PALINDROME")
+elif r == 0 and x == 1:
+    s = chr(ord(s) + 1)
+    print("\nString is a PALINDROME")
+
+
+reverse string
+
+def binary_string_reversal(input_string):
+    tape = list(input_string)
+    head_position = 0
+    while head_position < len(tape) // 2:
+        tape[head_position], tape[len(tape) - 1 - head_position] = tape[len(tape) - 1 - head_position], tape[head_position]
+        head_position += 1
+    reversed_string = ''.join(tape)
+    return reversed_string
+input_binary_string = input("Enter a binary string: ")
+result = binary_string_reversal(input_binary_string)
+print(f"Original Binary String: {input_binary_string}")
+print(f"Reversed Binary String: {result}")
+
+
+
+
+
