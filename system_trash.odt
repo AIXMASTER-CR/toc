@@ -1234,7 +1234,193 @@ else:
 
 
 
+CPPPP
 
+
+
+
+mean med mode
+
+#include<iostream>
+#include<algorithm>
+using namespace std;
+int main(){
+    //mean= average of given data
+    //median= middle term after data in ascendongor descending order
+    //mode=highest repeated term
+    int max=0, mode=0, n, count=0;
+    float mean=0, median, arr[50], temp=0;
+    cout<<"enter number of elements"<<endl;
+    cin>>n;
+    cout<<"enter the elements in any order"<<endl;
+    
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+        mean=mean +arr[i];
+    }
+    mean=mean/n;
+    cout<<"mean="<<mean<<endl;
+
+    sort(arr,arr + n);
+    if(n%2==0){
+        median=(arr[((n/2)-1)]+arr[(n/2)])/2.0;
+        cout<<"median="<<median<<endl;
+    }
+    else{
+        median=arr[((n-1)/2)];
+        cout<<"median="<<median<<endl;
+    }
+
+    for(int i=0;i<n;i++){
+        count=0;
+        for(int j=0;j<n;j++){
+            if(arr[i]==arr[j]){
+                count++;
+            }
+        }
+        if(count>max){
+        max=count;
+        mode=arr[i];
+    }
+    }
+cout<<"mode="<<mode<<endl;
+}
+////////////////////////////////////////////////////////////////////////////////////
+
+gmhm
+
+#include<iostream>
+#include<math.h>
+using namespace std;
+int main(){
+    //gm- done to find exponential growth or decay in data, helps dealing with extreme values
+    //hm- mean of inversed components(reciprocal)(speed, time)
+    int n;
+    float mean=0, x=0, y=0, hm=0, arr[20];
+    cout<<"enter no. of elements"<<endl;
+    cin>>n;
+    cout<<"enter the elements"<<endl;
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+    }
+
+    for(int i=0;i<n;i++){
+        mean=mean + log10(arr[i]);
+    }
+    int value=mean/n;
+    double gm=pow(10,value);
+    cout<<"geometric mean="<<gm<<endl;
+    
+    for(int i=0;i<n;i++){
+        x=1/arr[i];
+        y=y+x;
+    }
+    hm=n/y;
+    cout<<"harmonic mean="<<hm<<endl;
+}
+///////////////////////////////////////////////////////////////////////////////////////////
+
+skew
+
+#include<iostream>
+#include <cmath>
+using namespace std;
+int main(){
+    //measure of skewness helps in finding direction of skew ness in data
+    //3 types= +ve,-ve,zero skewness(symmetric data)
+    //helps us understand shape n outliers in the dataset
+    float mean, median, sd, skewness;
+
+    cout << "Enter the standard deviation: ";
+    cin >> sd;
+    cout << "Enter the mean: ";
+    cin >> mean;
+    cout << "Enter the median: ";
+    cin >> median;
+
+  // Calculate Karl Pearson Skewness Coefficient
+    skewness=3*(mean-median)/sd;
+    cout << "Karl Pearson Skewness: " << skewness << endl;
+    if(skewness>0&&skewness<3){cout<<"data is positively skewed"<<endl;}
+    else if(skewness<0&&skewness>-3){cout<<"data is negatively skewed"<<endl;}
+    else{ cout<<"data is symmetric"<<endl;}
+  return 0;
+}
+/////////////////////////////////////////////////////////////////////////////////////
+
+spearman rank Coefficient
+
+#include<iostream>
+#include<cmath>
+using namespace std;
+int main(){
+    //used to determine relationship or association between 2 qualitative characteristics
+    int arr1[20], arr2[20], arr3[20], arr4[20], n, apple, nn;
+    float mango=0.0, rankss;
+    cout<<"enter number of elements"<<endl;
+    cin>>n;
+
+    cout<<"enter elements of 1st observation table"<<endl;
+    for(int i=0;i<n;i++){
+        cin>>arr1[i];
+    }
+
+    cout<<"enter elements of 2nd observation table"<<endl;
+    for(int i=0;i<n;i++){
+        cin>>arr2[i];
+    }
+    cout<<"enter ranks of 1st observation table"<<endl;
+    for(int i=0;i<n;i++){
+        cin>>arr3[i];
+    }
+
+    cout<<"enter ranks of 2nd observation table"<<endl;
+    for(int i=0;i<n;i++){
+        cin>>arr4[i];
+    }
+
+    for(int i=0;i<n;i++){
+        apple=arr3[i]-arr4[i];
+        mango=mango+(1.0*apple*apple);
+    }
+    nn=n*n;
+    rankss= 1- ((6.0*mango)/(n*(nn-1)));
+    cout<<"rank correlation using Spearman's coefficient="<<rankss<<endl;
+}
+////////////////////////////////////////////////////////////////////////////////////
+
+chi square
+
+#include<iostream>
+using namespace std;
+int main(){
+    //used for hypothesis testiing
+    //checks difference between observed and expected value, compared to critical value and then decided to accept or not
+    int o[10], e[10], n, dude;
+    float man=0.0, boy, chi, cv;
+    cout<<"no. of elements"<<endl;
+    cin>>n;
+    cout<<"observed elements"<<endl;
+    for(int i=0;i<n;i++){
+        cin>>o[i];
+    }
+    cout<<"expected elements corresponding to observed elements"<<endl;
+    for(int i=0;i<n;i++){
+        cin>>e[i];
+    }
+    for(int i=0;i<n;i++){
+        dude=o[i]-e[i];
+        boy=1.0*(dude*dude)/e[i]*1.0;
+        man=man+boy;
+    }
+    chi=man;
+    cout<<"chi square value:"<<chi<<endl;
+    cout<<"enter critical value"<<endl;
+    cin>>cv;
+    if(cv>=chi){cout<<"value accepted"<<endl;}
+    else{cout<<"chi square value rejected"<<endl;}
+}
+/////////////////////////////////////////////////////////////////////////////////
 
 
 
