@@ -400,3 +400,360 @@ print(f"Reversed Binary String: {result}")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+adjacncy matrix
+
+v = int(input("Enter the number of vertices: "))
+e = int(input("Enter the number of edges: "))
+amatrix = [[0 for _ in range(v)] for _ in range(v)]
+print("Enter the edges in the format source destination:")
+for _ in range(e):
+    source, destination = map(int, input().split())
+    amatrix[source][destination] = 1
+    amatrix[destination][source] = 1
+print("Adjacency Matrix:")
+for i in range(v):
+    for j in range(v):
+        print(amatrix[i][j], end=" ")
+    print()
+for i in range(v):
+    vertexDegree = sum(amatrix[i])
+    print(f"Degree of vertex {i + 1}: {vertexDegree}")
+adjacncy matrix methods
+def create_adjacency_matrix(edges, max_node):
+    adj_matrix = [[0] * max_node for _ in range(max_node)]
+    for source, destination in edges:
+        adj_matrix[source - 1][destination - 1] = 1
+    return adj_matrix
+def complement_adjacency_matrix(adj_matrix):
+    complement_matrix = [[1 - x for x in row] for row in adj_matrix]
+    return complement_matrix
+def display_matrix(matrix):
+    for row in matrix:
+        print(" ".join(map(str, row)))
+    graph = []
+    while True:
+        edge = input("Enter an edge (source destination): ")
+        if edge.lower() == 'done':
+            break
+        source, destination = map(int, edge.split())
+        graph.append((source, destination))
+    return graph
+print("Enter the edges for Graph 1:")
+g1 = input_graph_data()
+print("Enter the edges for Graph 2:")
+g2 = input_graph_data()
+max_node = max(max(max(g1), max(g2)))
+adj_matrix1 = create_adjacency_matrix(g1, max_node)
+adj_matrix2 = create_adjacency_matrix(g2, max_node)
+complement_matrix1 = complement_adjacency_matrix(adj_matrix1)
+complement_matrix2 = complement_adjacency_matrix(adj_matrix2)
+union_matrix = [[max(adj_matrix1[i][j], adj_matrix2[i][j]) for j in range(max_node)] for i in range(max_node)]
+intersection_matrix = [[min(adj_matrix1[i][j], adj_matrix2[i][j]) for j in range(max_node)] for i in range(max_node)]
+difference_matrix = [[max(0, adj_matrix1[i][j] - adj_matrix2[i][j]) for j in range(max_node)] for i in range(max_node)]
+print("\nAdjacency Matrix for Graph 1:")
+display_matrix(adj_matrix1)
+print("\nAdjacency Matrix for Graph 2:")
+display_matrix(adj_matrix2)
+print("\nComplement of Adjacency Matrix for Graph 1:")
+display_matrix(complement_matrix1)
+print("\nComplement of Adjacency Matrix for Graph 2:")
+display_matrix(complement_matrix2)
+print("\nUnion of the Adjacency Matrices:")
+display_matrix(union_matrix)
+print("\nIntersection of the Adjacency Matrices:")
+display_matrix(intersection_matrix)
+print("\nDifference between the Adjacency Matrices (Graph 1 - Graph 2):")
+display_matrix(difference_matrix)
+
+
+havel hakimi
+
+def havel_hakimi_algorithm(degrees):
+    degrees.sort(reverse=True)
+    while degrees and degrees[0] == 0:
+        degrees.pop(0)
+    if len(degrees) == 0:
+        return True
+    if degrees[0] >= len(degrees):
+        return False
+    for i in range(1, degrees[0] + 1):
+        degrees[i] -= 1
+    return havel_hakimi_algorithm(degrees[1:])
+degrees = [int(x) for x in input("Enter a list of degrees separated by spaces: ").split()]
+if havel_hakimi_algorithm(degrees):
+    print("The input degrees represent a valid graph.")
+else:
+    print("The input degrees do not represent a valid graph.")
+
+dijkstra
+
+def dijkstra(graph, start):
+    distance = {vertex: float('inf') for vertex in graph}
+    distance[start] = 0
+    unvisited = list(graph.keys())    
+    while unvisited:
+        current_vertex = min(unvisited, key=lambda vertex: distance[vertex])        
+        for neighbor, weight in graph[current_vertex].items():
+            calculated_distance = distance[current_vertex] + weight
+            if calculated_distance < distance[neighbor]:
+                distance[neighbor] = calculated_distance        
+        unvisited.remove(current_vertex)    
+    return distance
+v = int(input("Enter the number of vertices in the graph: "))
+g1 = {str(i): {} for i in range(1, v + 1)}
+for i in range(v):
+    for j in range(i + 1, v):
+        weight = int(input(f"Enter weight between vertex {i + 1} and vertex {j + 1}: "))
+        if weight != 0:
+            g1[str(i + 1)][str(j + 1)] = weight
+            g1[str(j + 1)][str(i + 1)] = weight
+st = input("Enter the starting node: ")
+shortest_distances = dijkstra(g1, st)
+for i, dist in shortest_distances.items():
+    if dist == float('inf'):
+        print(f"There is no path from {st} to {i}.")
+    else:
+        print(f"Shortest distance from {st} to {i} is {dist}")
+
+prims
+def prim(graph):
+    start_vertex = list(graph.keys())[0]
+    min_spanning_tree = []
+    visited = set([start_vertex])
+    while len(visited) < len(graph):
+        min_edge = (float('inf'), None, None)
+        for vertex in visited:
+            for neighbor, weight in graph[vertex].items():
+                if neighbor not in visited and weight < min_edge[0]:
+                    min_edge = (weight, vertex, neighbor)
+        if min_edge[1] is not None and min_edge[2] is not None:
+            weight, vertex, neighbor = min_edge
+            min_spanning_tree.append((vertex, neighbor, weight))
+            visited.add(neighbor)
+    return min_spanning_tree
+v = int(input("Enter the number of vertices in the graph: "))
+g1 = {str(i): {} for i in range(1, v + 1)}
+for i in range(v):
+    for j in range(i + 1, v):
+        weight = int(input(f"Enter weight between vertex {i + 1} and vertex {j + 1}  "))
+        if weight != 0:
+            g1[str(i + 1)][str(j + 1)] = weight
+            g1[str(j + 1)][str(i + 1)] = weight
+for i in range(1, v + 1):
+    for j in range(i + 1, v + 1):
+        if not g1[str(i)].get(str(j)):
+            g1[str(i)][str(j)] = float('inf')
+            g1[str(j)][str(i)] = float('inf')
+minimum_spanning_tree = prim(g1)
+print("Minimum Spanning Tree:")
+for vertex, neighbor, weight in minimum_spanning_tree:
+    if weight == float('inf'):
+        print(f"No edge between {vertex} and {neighbor}")
+    else:
+        print(f"Edge: {vertex} - {neighbor}, Weight: {weight}")
+
+kruskal
+class Graph:
+    def __init__(self, vertices):
+        self.vertices = vertices
+        self.edges = []
+    def add_edge(self, u, v, w):
+        self.edges.append((u - 1, v - 1, w))
+    def kruskal(self):
+        self.edges = sorted(self.edges, key=lambda item: item[2])
+        parent = [i for i in range(self.vertices)]
+        result = []
+        index = 0
+        while len(result) < self.vertices - 1:
+            u, v, w = self.edges[index]
+            index += 1
+            x = self.find(parent, u)
+            y = self.find(parent, v)
+            if x != y:
+                result.append((u, v, w))
+                self.union(parent, x, y)
+        return result
+    def find(self, parent, i):
+        if parent[i] == i:
+            return i
+        return self.find(parent, parent[i])
+    def union(self, parent, x, y):
+        parent[x] = y
+def main():
+    vertices = int(input("Enter the number of vertices in the graph: "))
+    graph = Graph(vertices)
+    for i in range(1, vertices + 1):
+        for j in range(i + 1, vertices + 1):
+            weight = int(input(f"Enter weight between vertex {i} and vertex {j}: "))
+            if weight != 0:
+                graph.add_edge(i, j, weight)
+    minimum_spanning_tree = graph.kruskal()
+    print("\nMinimum Spanning Tree:")
+    for u, v, w in minimum_spanning_tree:
+        print(f"Edge: {u + 1} - {v + 1}, Weight: {w}")
+if __name__ == "__main__":    main()
+
+
+bsf 
+from collections import defaultdict, deque
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    while queue:
+        vertex = queue.popleft()
+        if vertex not in visited:
+            print(vertex, end=' ')
+            visited.add(vertex)
+            queue.extend(neighbor for neighbor in graph[vertex] if neighbor not in visited)
+edges = []
+while True:
+    edge = input("Enter an edge: ")
+    if edge.lower() == 'done':
+        break
+    edges.append(tuple(edge.split()))
+graph = defaultdict(list)
+for edge in edges:
+    u, v = edge
+    graph[u].append(v)
+    graph[v].append(u)
+start_node = input("Enter the starting node: ")
+print("BFS traversal starting from '{}':".format(start_node))
+bfs(graph, start_node)
+
+dfs
+def dfs(graph, start, visited=None):
+    if visited is None:
+        visited = set()
+    if start not in visited:
+        print(start, end=' ')
+        visited.add(start)
+        for neighbor in graph[start]:
+            dfs(graph, neighbor, visited)
+edges = []
+while True:
+    edge = input("Enter an edge : ")
+    if edge.lower() == 'done':
+        break
+    edges.append(tuple(edge.split()))
+graph = {}
+for edge in edges:
+    u, v = edge
+    if u not in graph:
+        graph[u] = []
+    if v not in graph:
+        graph[v] = []
+    graph[u].append(v)
+    graph[v].append(u)
+start_node = input("Enter the starting node: ")
+print("DFS traversal starting from '{}':".format(start_node))
+dfs(graph, start_node)
+
+color
+class Graph:
+    def __init__(self, vertices):
+        self.vertices = vertices
+        self.graph = {}
+        self.colors = {}
+    def add_edge(self, u, v):
+        if u not in self.graph:
+            self.graph[u] = []
+        if v not in self.graph:
+            self.graph[v] = []
+        self.graph[u].append(v)
+        self.graph[v].append(u)
+    def is_safe(self, vertex, color, c):
+        for neighbor in self.graph[vertex]:
+            if neighbor in self.colors and self.colors[neighbor] == c:
+                return False
+        return True
+    def greedy_coloring(self):
+        for vertex in self.graph:
+            for c in range(self.vertices):
+                if self.is_safe(vertex, self.colors, c):
+                    self.colors[vertex] = c
+                    break
+    def print_colors(self):
+        for vertex in self.graph:
+            print(f"Vertex {vertex} has color {self.colors[vertex]}")
+if __name__ == "__main__":
+    num_vertices = int(input("Enter the number of vertices: "))
+    num_edges = int(input("Enter the number of edges: "))
+    g = Graph(num_vertices)
+    for _ in range(num_edges):
+        u, v = map(int, input("Enter an edge (u v): ").split())
+        g.add_edge(u, v)
+    g.greedy_coloring()
+    g.print_colors()
+
+travelling sale
+import itertools
+def traveling_salesman(nodes, edges):
+    node_permutations = list(itertools.permutations(nodes))
+    min_distance = float('inf')
+    optimal_path = []
+    for path in node_permutations:
+        distance = 0
+        for i in range(len(path) - 1):
+            current_edge = (path[i], path[i + 1])
+            distance += edges[current_edge]
+        if distance < min_distance:
+            min_distance = distance
+            optimal_path = path + (path[0],) 
+    return optimal_path, min_distance
+num_nodes = int(input("Enter the number of nodes: "))
+edges = {}
+for i in range(num_nodes):
+    for j in range(i + 1, num_nodes):
+        weight = int(input(f"Enter the weight for edge ({i}, {j}): "))
+        edges[(i, j)] = weight
+        edges[(j, i)] = weight 
+nodes = tuple(range(num_nodes))
+optimal_path, min_distance = traveling_salesman(nodes, edges)
+print(f"Optimal Path: {optimal_path}")
+print(f"Minimum Distance: {min_distance}")
+
+
+
+
+
+
+
+
+
+
+
+
+
